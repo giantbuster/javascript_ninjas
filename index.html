@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<!--
+    Jefferson Lam
+    11-20-13
+    JavaScript Ninja Assignment
+    
+    Assignment: See readme
+-->
 <html>
 <head>
 	<title>Character Game</title>
@@ -6,99 +14,156 @@
 		.container{
 			
 		}
-		.arena{
+		#arena{;
 			width: 510px;
 			height: 510px;
 			border: 1px solid;
 		}
-
 		#character{
 			width: 59px;
 			height: 86px;
 			background-image: url('img/down1.png');
 		}
-	</style>
-</head>
-<body>
-	<div class="container">
-		<div class="arena">
-			<div id="character" style="position:relative; top:0px; left:0px;"></div>
-		</div>
-	</div>
 
+		#character2{
+			width: 59px;
+			height: 86px;
+			background-image: url('img/down1.png');
+		}
+	</style>
 	<script>
-	var x=0, y=0;
+	var speed = 10;
 	var facing = {
 		LEFT : "LEFT",
 		UP : "UP",
 		RIGHT : "RIGHT",
 		DOWN : "DOWN"
-	};
-	var state = facing.UP;
-	var alternate = 1;
-	var newState = 0;
-	var arenaWidth = 500;
-	var arenaHeight = 500;
-
-	function gameStart(){
-		var width = arenaWidth + 10;
-		$('#character').css('width', width);
-		var height = arenaHeight + 10;
-		$('#character').css('width', height);
 	}
-	
-	var updateImage = function(state, newState){
-		if (state != newState){
-			$('#character').css("background-image", 'url(img/'+newState+alternate+'.png)');
-		} else {
-			alternate = (alternate == 1 ? 2 : 1);
-			$('#character').css("background-image", 'url(img/'+newState+alternate+'.png)');
+
+	var ninja1 = {
+		x : 0, 
+		y : 0,
+		state : "UP",
+		newState : "UP",
+		alternate : 1,
+		newState : 0,
+		updateImage : function(){
+			if (this.state != this.newState){
+				$('#character').css("background-image", 'url(img/'+this.newState+this.alternate+'.png)');
+			} else {
+				this.alternate = (this.alternate == 1 ? 2 : 1);
+				$('#character').css("background-image", 'url(img/'+this.newState+this.alternate+'.png)');
+			}
+		},
+		move : function(e){
+			//left arrow
+			var moved = true;
+			if(e.keyCode == 37){
+				this.x = this.x-speed;
+				this.newState = facing.LEFT;
+			//up arrow
+			} else if(e.keyCode == 38) {
+				this.y = this.y-speed;
+				this.newState = facing.UP;
+			//right arrow
+			} else if(e.keyCode == 39) {
+				this.x = this.x+speed;
+				this.newState = facing.RIGHT;
+			//down arrow
+			} else if(e.keyCode == 40) {
+				this.y = this.y+speed;
+				this.newState = facing.DOWN;
+			} else {
+				moved = false;
+			}
+			if (moved) this.updateImage();
+		},
+		updateState : function(){
+			this.state = this.newState;
+		},
+		constrain : function(){
+			if (this.x>460) this.x = 460;
+			if (this.x<0) this.x = 0;
+			if (this.y>430) this.y = 430;
+			if (this.y<0) this.y = 0;
 		}
 	}
-	var constrain = function(){
-		if (x>460) x = 460;
-		else if (x<0) x = 0;
-		if (y>430) y = 430;
-		else if (y<0) y = 0;
-	}
 
-	var moveNinja = function(e){
-		//left arrow
-		if(e.keyCode == 37){
-			x = x-10;
-			newState = facing.LEFT;
-		//up arrow
-		} else if(e.keyCode == 38) {
-			y = y-10;
-			newState = facing.UP;
-			console.log(newState);
-		//right arrow
-		} else if(e.keyCode == 39) {
-			x = x+10;
-			newState = facing.RIGHT;
-		//down arrow
-		} else if(e.keyCode == 40) {
-			y = y+10;
-			newState = facing.DOWN;
-		} 
+	var ninja2 = {
+		x : 440, 
+		y : 0,
+		state : "UP",
+		newState : "UP",
+		alternate : 1,
+		newState : 0,
+		updateImage : function(){
+			if (this.state != this.newState){
+				$('#character2').css("background-image", 'url(img/'+this.newState+this.alternate+'.png)');
+			} else {
+				this.alternate = (this.alternate == 1 ? 2 : 1);
+				$('#character2').css("background-image", 'url(img/'+this.newState+this.alternate+'.png)');
+			}
+		},
+		move : function(e){
+			//left arrow
+			var moved = true;
+			if(e.keyCode == 65){
+				this.x = this.x-speed;
+				this.newState = facing.LEFT;
+			//up arrow
+			} else if(e.keyCode == 87) {
+				this.y = this.y-speed;
+				this.newState = facing.UP;
+			//right arrow
+			} else if(e.keyCode == 68) {
+				this.x = this.x+speed;
+				this.newState = facing.RIGHT;
+			//down arrow
+			} else if(e.keyCode == 83) {
+				this.y = this.y+speed;
+				this.newState = facing.DOWN;
+			} else {
+				moved = false;
+			}
+			if (moved) this.updateImage();
+		},
+		updateState : function(){
+			this.state = this.newState;
+		},
+		constrain : function(){
+			if (this.x>460) this.x = 460;
+			if (this.x<0) this.x = 0;
+			if (this.y>430) this.y = 430;
+			if (this.y<0) this.y = 0;
+		}
 	}
 
 	document.onkeydown = function(e) {
-		moveNinja(e);
-		updateImage(state, newState);
-		constrain();
-		state = newState;
-		console.log(character);
+		ninja1.move(e);
+		ninja1.updateState();
+		ninja1.constrain();
+		ninja2.move(e);
+		ninja2.updateState();
+		ninja2.constrain();
 	}
 
-	function gameLoop()
-	{
-		$('#character').css("left", x+"px");
-		$('#character').css("top", y+"px");
+	function gameLoop(){
+		$('#character').css("left", ninja1.x+"px");
+		$('#character').css("top", ninja1.y+"px");
+		$('#character2').css("left", ninja2.x+"px");
+		$('#character2').css("top", ninja2.y+"px");
 	}
 
 	setInterval(gameLoop, 150);
 	</script>
+</head>
 
+<body>
+	<div class="container">
+		<div id="arena">
+			<div id="character" style="position:absolute; top:0px; left:0px;"></div>
+			<div id="character2" style="position:absolute; top:0px; left:440px"></div>
+		</div>
+	</div>
 </body>
 </html>
