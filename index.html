@@ -1,0 +1,104 @@
+<html>
+<head>
+	<title>Character Game</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<style type="text/css">
+		.container{
+			
+		}
+		.arena{
+			width: 510px;
+			height: 510px;
+			border: 1px solid;
+		}
+
+		#character{
+			width: 59px;
+			height: 86px;
+			background-image: url('img/down1.png');
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="arena">
+			<div id="character" style="position:relative; top:0px; left:0px;"></div>
+		</div>
+	</div>
+
+	<script>
+	var x=0, y=0;
+	var facing = {
+		LEFT : "LEFT",
+		UP : "UP",
+		RIGHT : "RIGHT",
+		DOWN : "DOWN"
+	};
+	var state = facing.UP;
+	var alternate = 1;
+	var newState = 0;
+	var arenaWidth = 500;
+	var arenaHeight = 500;
+
+	function gameStart(){
+		var width = arenaWidth + 10;
+		$('#character').css('width', width);
+		var height = arenaHeight + 10;
+		$('#character').css('width', height);
+	}
+	
+	var updateImage = function(state, newState){
+		if (state != newState){
+			$('#character').css("background-image", 'url(img/'+newState+alternate+'.png)');
+		} else {
+			alternate = (alternate == 1 ? 2 : 1);
+			$('#character').css("background-image", 'url(img/'+newState+alternate+'.png)');
+		}
+	}
+	var constrain = function(){
+		if (x>460) x = 460;
+		else if (x<0) x = 0;
+		if (y>430) y = 430;
+		else if (y<0) y = 0;
+	}
+
+	var moveNinja = function(e){
+		//left arrow
+		if(e.keyCode == 37){
+			x = x-10;
+			newState = facing.LEFT;
+		//up arrow
+		} else if(e.keyCode == 38) {
+			y = y-10;
+			newState = facing.UP;
+			console.log(newState);
+		//right arrow
+		} else if(e.keyCode == 39) {
+			x = x+10;
+			newState = facing.RIGHT;
+		//down arrow
+		} else if(e.keyCode == 40) {
+			y = y+10;
+			newState = facing.DOWN;
+		} 
+	}
+
+	document.onkeydown = function(e) {
+		moveNinja(e);
+		updateImage(state, newState);
+		constrain();
+		state = newState;
+		console.log(character);
+	}
+
+	function gameLoop()
+	{
+		$('#character').css("left", x+"px");
+		$('#character').css("top", y+"px");
+	}
+
+	setInterval(gameLoop, 150);
+	</script>
+
+</body>
+</html>
